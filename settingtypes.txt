@@ -1,0 +1,29 @@
+#Sprint speed multiplier
+sprint_speed (Sprint speed multiplier) float 1.3
+
+#Sprint jump multiplier
+sprint_jump (Sprint jump multiplier) float 1.1
+
+#Use a key to sprint
+sprint_key (Sprint key) enum Use Use
+
+#Require player to move forward only to be able to sprint
+sprint_forward_only (Sprint forward only) bool true
+
+#The amount of particles to spawn behind a sprinting player
+sprint_particles (Particles) float 2
+
+#Drain stamina while sprinting
+sprint_stamina (Stamina) bool true
+
+#The amount of stamina to drain while sprinting
+sprint_stamina_drain (Stamina drain) float 2
+
+#The amount of seconds before starting to replenish stamina
+sprint_stamina_replenish (Stamina replenish) float 2
+
+#Drain satiation while sprinting
+sprint_starve (Starve) bool true
+
+#The amount of satiation to drain while sprinting
+sprint_starve_drain (Starve drain) float 0.5

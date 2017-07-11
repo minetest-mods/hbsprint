@@ -98,7 +98,7 @@ if minetest.get_modpath("hudbars") ~= nil and stamina then
 	hb.register_hudbar("stamina",
 		0xFFFFFF,
 		"Stamina",
-		{ bar = "sprint_stamina_bar.png", icon = "sprint_stamina_icon.png" },
+		{ bar = "sprint_stamina_bar.png", icon = "sprint_stamina_icon.png", bgicon = "sprint_stamina_bgicon.png" },
 		player_stamina, player_stamina,
 		false, "%s: %.1f/%.1f")
 	hudbars = true

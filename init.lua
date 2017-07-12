@@ -20,9 +20,9 @@ local sprinting = false
 if dir == nil then dir = true end
 if stamina ~= false then stamina = true end
 if starve == nil then starve = true end
-if not minetest.get_modpath("hudbars") then hudbars = false end
-if not minetest.get_modpath("hbhunger") then starve = false end
-if not minetest.get_modpath("player_monoids") then monoids = false end
+if minetest.get_modpath("hudbars") ~= nil then hudbars = true end
+if minetest.get_modpath("hbhunger") ~= nil then starve = true end
+if minetest.get_modpath("player_monoids") ~= nil then monoids = true end
 
 -- Functions
 

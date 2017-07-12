@@ -6,7 +6,7 @@ A flexible sprint mod supporting stamina, hunger and coexistance with other phys
 
 ## Notes
 hbSprint can be played with Minetest 0.4.16 or above.
-It supports on [hudbars](http://repo.or.cz/w/minetest_hudbars.git), [hbhunger](http://repo.or.cz/w/minetest_hbhunger.git) and [player_monoids](https://github.com/minetest-mods/player_monoids).
+It has no dependencies, but it supports on [hudbars](http://repo.or.cz/w/minetest_hudbars.git), [hbhunger](http://repo.or.cz/w/minetest_hbhunger.git) and [player_monoids](https://github.com/minetest-mods/player_monoids).
 
 ## List of features
 
@@ -26,4 +26,4 @@ You can report bugs or suggest ideas by [filing an issue](http://github.com/taco
 ## Links
 * [Download ZIP](https://github.com/tacotexmex/hbsprint/archive/master.zip)
 * [Source](https://github.com/tacotexmex/hbsprint/)
-* [Forum thread]https://forum.minetest.net/viewtopic.php?f=9&t=18069&p=282981
+* [Forum thread](https://forum.minetest.net/viewtopic.php?f=9&t=18069&p=282981)

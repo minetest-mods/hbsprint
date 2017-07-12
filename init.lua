@@ -15,6 +15,7 @@ local sprint_timer_step = 0.5
 local sprint_timer = 0
 local player_stamina = 20
 local stamina_timer = 0
+local sprinting = false
 
 if dir == nil then dir = true end
 if stamina ~= false then stamina = true end
@@ -26,20 +27,24 @@ if not minetest.get_modpath("player_monoids") then monoids = false end
 -- Functions
 
 local function start_sprint(player)
-	if monoids then
-		player_monoids.speed:add_change(player, speed, "sprint:sprint")
-		player_monoids.jump:add_change(player, jump, "sprint:jump")
-	else
-		player:set_physics_override({speed = speed, jump = jump})
+	if not sprinting then
+		if monoids then
+			player_monoids.speed:add_change(player, speed, "hbsprint:speed")
+			player_monoids.jump:add_change(player, jump, "hbsprint:jump")
+		else
+			player:set_physics_override({speed = speed, jump = jump})
+		end
 	end
 end
 
 local function stop_sprint(player)
-	if monoids then
-		player_monoids.speed:del_change(player, "sprint:sprint")
-		player_monoids.jump:del_change(player, "sprint:jump")
-	else
-		player:set_physics_override({speed = 1, jump = 1})
+	if sprinting then
+		if monoids then
+			player_monoids.speed:del_change(player, "hbsprint:speed")
+			player_monoids.jump:del_change(player, "hbsprint:jump")
+		else
+			player:set_physics_override({speed = 1, jump = 1})
+		end
 	end
 end
 
@@ -141,18 +146,20 @@ minetest.register_globalstep(function(dtime)
 				if ground ~= nil then
 					walkable = minetest.registered_nodes[ground.name].walkable
 				end
-				if player_stamina > 0 and hunger > 9 and walkable then --AND IF NOT WATER!
+				if player_stamina > 0 and hunger > 9 and walkable then
 					start_sprint(player)
 					if stamina then drain_stamina(player) end
 					if starve then drain_hunger(player, hunger, name) end
 					if particles then create_particles(player, name, pos, ground) end
 				end
+				sprinting = true
 			else
 				stop_sprint(player)
 				if stamina_timer >= replenish then
 					if stamina then replenish_stamina(player) end
 					stamina_timer = 0
 				end
+				sprinting = false
 			end
 		end
 		sprint_timer = 0

@@ -12,9 +12,9 @@ It has no dependencies, but it supports on [hudbars](http://repo.or.cz/w/minetes
 
 - Displays and drains stamina (by default, if hudbars is present). Hides stamina bar if full.
 - Displays and drains satiation (by default, if hbhunger is present)
-- Drains air faster while sprinting under water (by default)
+- Drains air faster while sprinting on walkable ground but in water (by default)
 - Requires only forward key to be pressed, not left and right (by default)
-- Requires walkable ground (no water sprinting)
+- Requires walkable ground (no water surface sprinting)
 - Particle spawning based on ground type (Thanks to [octacian](https://github.com/octacian/sprint/))
 - All variables customizable in Advanced settings or directly in minetest.conf
 

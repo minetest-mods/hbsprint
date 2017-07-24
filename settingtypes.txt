@@ -27,3 +27,9 @@ sprint_starve (Starve) bool true
 
 #The amount of satiation to drain while sprinting
 sprint_starve_drain (Starve drain) float 0.5
+
+#Drain air while sprinting under water
+sprint_breath (Breath) bool true
+
+#The amount of air to drain while sprinting under water
+sprint_breath_drain (Breath drain) float 1

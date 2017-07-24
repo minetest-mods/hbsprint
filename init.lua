@@ -9,17 +9,21 @@ local stamina = minetest.settings:get_bool("sprint_stamina") or true
 local stamina_drain = tonumber(minetest.settings:get("sprint_stamina_drain")) or 2
 local replenish = tonumber(minetest.settings:get("sprint_stamina_replenish")) or 2
 local starve = minetest.settings:get_bool("sprint_starve") or true
-local starve_drain = minetest.settings:get("sprint_starve_drain") or 0.5
+local starve_drain = tonumber(minetest.settings:get("sprint_starve_drain")) or 0.5
+local breath = minetest.settings:get_bool("sprint_breath") or true
+local breath_drain = tonumber(minetest.settings:get("sprint_breath_drain")) or 1
 
 local sprint_timer_step = 0.5
 local sprint_timer = 0
 local player_stamina = 20
 local stamina_timer = 0
+local breath_timer = 0
 local sprinting = false
 
-if dir == nil then dir = true end
+if dir ~= false then dir = true end
 if stamina ~= false then stamina = true end
-if starve == nil then starve = true end
+if starve ~= false then starve = true end
+if breath ~= false then breath = true end
 if minetest.get_modpath("hudbars") ~= nil then hudbars = true end
 if minetest.get_modpath("hbhunger") ~= nil then starve = true end
 if minetest.get_modpath("player_monoids") ~= nil then monoids = true end
@@ -77,6 +81,16 @@ local function drain_hunger(player, hunger, name)
 	end
 end
 
+local function drain_breath(player)
+	local player_breath = player:get_breath()
+	if player_breath < 11 then
+		player_breath = player_breath - breath_drain
+		if player_breath > 0 then
+			player:set_breath(player_breath)
+		end
+	end
+end
+
 local function create_particles(player, name, pos, ground)
 	if ground and ground.name ~= "air" and ground.name ~= "ignore" then
 		local def = minetest.registered_nodes[ground.name]
@@ -118,6 +132,7 @@ end)
 minetest.register_globalstep(function(dtime)
 	sprint_timer = sprint_timer + dtime
 	stamina_timer = stamina_timer + dtime
+	breath_timer = breath_timer + dtime
 	if sprint_timer >= sprint_timer_step then
 		for _,player in ipairs(minetest.get_connected_players()) do
 			local ctrl = player:get_player_control()
@@ -150,6 +165,12 @@ minetest.register_globalstep(function(dtime)
 					start_sprint(player)
 					if stamina then drain_stamina(player) end
 					if starve then drain_hunger(player, hunger, name) end
+					if breath then
+						if breath_timer >= 2 then
+							drain_breath(player)
+							breath_timer = 0
+						end
+					end
 					if particles then create_particles(player, name, pos, ground) end
 				end
 				sprinting = true

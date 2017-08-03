@@ -1,5 +1,5 @@
 # hbSprint
-License: LGPLv3/CC BY-SA 3.0. Particle code: copyright (c) 2017 Elijah Duffy, licensed MIT.
+License: LGPLv2.1/CC BY-SA 3.0. Particle code: copyright (c) 2017 Elijah Duffy.
 
 ## Description
 A flexible sprint mod supporting stamina, hunger and coexistance with other physics altering mods.

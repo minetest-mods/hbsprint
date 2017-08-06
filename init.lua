@@ -12,6 +12,10 @@ local starve = minetest.settings:get_bool("sprint_starve") or true
 local starve_drain = tonumber(minetest.settings:get("sprint_starve_drain")) or 0.5
 local breath = minetest.settings:get_bool("sprint_breath") or true
 local breath_drain = tonumber(minetest.settings:get("sprint_breath_drain")) or 1
+if dir ~= false then dir = true end
+if stamina ~= false then stamina = true end
+if starve ~= false then starve = true end
+if breath ~= false then breath = true end
 
 local sprint_timer_step = 0.5
 local sprint_timer = 0
@@ -19,14 +23,13 @@ local player_stamina = 20
 local stamina_timer = 0
 local breath_timer = 0
 local sprinting = false
+local hudbars = false
+local starve = false
+local monoids = false
 
-if dir ~= false then dir = true end
-if stamina ~= false then stamina = true end
-if starve ~= false then starve = true end
-if breath ~= false then breath = true end
-if minetest.get_modpath("hudbars") ~= nil then hudbars = true end
-if minetest.get_modpath("hbhunger") ~= nil then starve = true end
-if minetest.get_modpath("player_monoids") ~= nil then monoids = true end
+if minetest.get_modpath("hudbars") ~= nil then hudbars = true else hudbars = false end
+if minetest.get_modpath("hbhunger") ~= nil then starve = true else starve = false end
+if minetest.get_modpath("player_monoids") ~= nil then monoids = true else monoids = false end
 
 -- Functions
 

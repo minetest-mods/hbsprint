@@ -5,12 +5,12 @@ local jump = tonumber(minetest.settings:get("sprint_jump")) or 1.1
 local key = minetest.settings:get("sprint_key") or "Use"
 local dir = minetest.settings:get_bool("sprint_forward_only")
 local particles = tonumber(minetest.settings:get("sprint_particles")) or 2
-local stamina = minetest.settings:get_bool("sprint_stamina") or true
+local stamina = minetest.settings:get_bool("sprint_stamina")
 local stamina_drain = tonumber(minetest.settings:get("sprint_stamina_drain")) or 2
 local replenish = tonumber(minetest.settings:get("sprint_stamina_replenish")) or 2
-local starve = minetest.settings:get_bool("sprint_starve") or true
+local starve = minetest.settings:get_bool("sprint_starve")
 local starve_drain = tonumber(minetest.settings:get("sprint_starve_drain")) or 0.5
-local breath = minetest.settings:get_bool("sprint_breath") or true
+local breath = minetest.settings:get_bool("sprint_breath")
 local breath_drain = tonumber(minetest.settings:get("sprint_breath_drain")) or 1
 if dir ~= false then dir = true end
 if stamina ~= false then stamina = true end

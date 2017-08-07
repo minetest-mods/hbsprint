@@ -166,6 +166,7 @@ minetest.register_globalstep(function(dtime)
 				end
 				if player_stamina > 0 and hunger > 9 and walkable then
 					start_sprint(player)
+					sprinting = true
 					if stamina then drain_stamina(player) end
 					if starve then drain_hunger(player, hunger, name) end
 					if breath then
@@ -175,15 +176,17 @@ minetest.register_globalstep(function(dtime)
 						end
 					end
 					if particles then create_particles(player, name, pos, ground) end
+				else
+					stop_sprint(player)
+					sprinting = false
 				end
-				sprinting = true
 			else
 				stop_sprint(player)
+				sprinting = false
 				if stamina_timer >= replenish then
 					if stamina then replenish_stamina(player) end
 					stamina_timer = 0
 				end
-				sprinting = false
 			end
 		end
 		sprint_timer = 0

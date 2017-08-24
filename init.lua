@@ -12,6 +12,7 @@ local starve = minetest.settings:get_bool("sprint_starve")
 local starve_drain = tonumber(minetest.settings:get("sprint_starve_drain")) or 0.5
 local breath = minetest.settings:get_bool("sprint_breath")
 local breath_drain = tonumber(minetest.settings:get("sprint_breath_drain")) or 1
+local autohide = minetest.settings:get_bool("hudbars_autohide_stamina") ~= false
 if dir ~= false then dir = true end
 if stamina ~= false then stamina = true end
 if starve ~= false then starve = true end
@@ -59,7 +60,7 @@ local function drain_stamina(player)
 		player:set_attribute("stamina", player_stamina - stamina_drain)
 	end
 	if hudbars then
-		if player_stamina < 20 then hb.unhide_hudbar(player, "stamina") end
+		if autohide and player_stamina < 20 then hb.unhide_hudbar(player, "stamina") end
 		hb.change_hudbar(player, "stamina", player_stamina)
 	end
 end
@@ -71,7 +72,7 @@ local function replenish_stamina(player)
 	end
 	if hudbars then
 		hb.change_hudbar(player, "stamina", player_stamina)
-		if player_stamina == 20 then hb.hide_hudbar(player, "stamina") end
+		if autohide and player_stamina == 20 then hb.hide_hudbar(player, "stamina") end
 	end
 end
 
@@ -122,7 +123,9 @@ if minetest.get_modpath("hudbars") ~= nil and stamina then
 		20, 20,
 		false, "%s: %.1f/%.1f")
 	hudbars = true
-	hb.hide_hudbar(nil, "stamina")
+	if autohide then
+		hb.hide_hudbar(player, "stamina")
+	end
 end
 
 minetest.register_on_joinplayer(function(player)

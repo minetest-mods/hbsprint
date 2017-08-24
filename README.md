@@ -1,8 +1,14 @@
 # hbSprint
-License: LGPLv2.1/CC BY-SA 3.0. Particle code: copyright (c) 2017 Elijah Duffy.
 
 ## Description
 A flexible sprint mod supporting stamina, hunger and coexistance with other physics altering mods.
+
+## Licensing
+- LGPLv2.1/CC BY-SA 3.0. Particle code: copyright (c) 2017 Elijah Duffy.
+- sprint_stamina_\*icon textures:
+  - CC0
+  - Created by Jordan Irwin (AntumDeluge)
+  - Based on [Running man icon by manio1](https://openclipart.org/detail/254287)
 
 ## Notes
 hbSprint can be played with Minetest 0.4.16 or above.
@@ -17,6 +23,7 @@ It has no dependencies, but it supports on [hudbars](http://repo.or.cz/w/minetes
 - Requires walkable ground (no water surface sprinting)
 - Particle spawning based on ground type (Thanks to [octacian](https://github.com/octacian/sprint/))
 - All variables customizable in Advanced settings or directly in minetest.conf
+
 
 ## Known issues
 - Forward double tap support not implemented

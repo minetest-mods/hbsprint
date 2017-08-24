@@ -122,7 +122,7 @@ if minetest.get_modpath("hudbars") ~= nil and stamina then
 		20, 20,
 		false, "%s: %.1f/%.1f")
 	hudbars = true
-	hb.hide_hudbar(player, "stamina")
+	hb.hide_hudbar(nil, "stamina")
 end
 
 minetest.register_on_joinplayer(function(player)

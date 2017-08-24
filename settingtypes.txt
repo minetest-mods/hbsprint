@@ -33,3 +33,7 @@ sprint_breath (Breath) bool true
 
 #The amount of air to drain while sprinting under water
 sprint_breath_drain (Breath drain) float 1
+
+#If enabled (default), the stamina indicators in the HUD will be automatically hidden shortly
+#after stamina has filled up. Otherwise, stamina will always be displayed.
+hudbars_autohide_stamina (Automatically hide staminal indicator) bool true

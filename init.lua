@@ -20,10 +20,8 @@ if breath ~= false then breath = true end
 
 local sprint_timer_step = 0.5
 local sprint_timer = 0
-local player_stamina = 20
 local stamina_timer = 0
 local breath_timer = 0
-local sprinting = false
 local hudbars = false
 local starve = false
 local monoids = false
@@ -35,7 +33,7 @@ if minetest.get_modpath("player_monoids") ~= nil then monoids = true else monoid
 -- Functions
 
 local function start_sprint(player)
-	if not sprinting then
+	if player:get_attribute("sprinting") == "false" then
 		if monoids then
 			player_monoids.speed:add_change(player, speed, "hbsprint:speed")
 			player_monoids.jump:add_change(player, jump, "hbsprint:jump")
@@ -46,7 +44,7 @@ local function start_sprint(player)
 end
 
 local function stop_sprint(player)
-	if sprinting then
+	if player:get_attribute("sprinting") == "true" then
 		if monoids then
 			player_monoids.speed:del_change(player, "hbsprint:speed")
 			player_monoids.jump:del_change(player, "hbsprint:jump")
@@ -57,7 +55,7 @@ local function stop_sprint(player)
 end
 
 local function drain_stamina(player)
-	player_stamina = tonumber(player:get_attribute("stamina"))
+	local player_stamina = tonumber(player:get_attribute("stamina"))
 	if player_stamina > 0 then
 		player:set_attribute("stamina", player_stamina - stamina_drain)
 	end
@@ -68,7 +66,7 @@ local function drain_stamina(player)
 end
 
 local function replenish_stamina(player)
-	player_stamina = tonumber(player:get_attribute("stamina"))
+	local player_stamina = tonumber(player:get_attribute("stamina"))
 	if player_stamina < 20 then
 		player:set_attribute("stamina", player_stamina + stamina_drain)
 	end
@@ -122,7 +120,7 @@ if minetest.get_modpath("hudbars") ~= nil and stamina then
 		0xFFFFFF,
 		"Stamina",
 		{ bar = "sprint_stamina_bar.png", icon = "sprint_stamina_icon.png", bgicon = "sprint_stamina_bgicon.png" },
-		player_stamina, player_stamina,
+		20, 20,
 		false, "%s: %.1f/%.1f")
 	hudbars = true
 	if autohide then
@@ -161,6 +159,7 @@ minetest.register_globalstep(function(dtime)
 				local pos = player:get_pos()
 				local ground = minetest.get_node_or_nil({x=pos.x, y=pos.y-1, z=pos.z})
 				local walkable = false
+				local player_stamina = tonumber(player:get_attribute("stamina"))
 				if starve then
 					hunger = tonumber(hbhunger.hunger[name])
 				end
@@ -169,7 +168,7 @@ minetest.register_globalstep(function(dtime)
 				end
 				if player_stamina > 0 and hunger > 9 and walkable then
 					start_sprint(player)
-					sprinting = true
+					player:set_attribute("sprinting", "true")
 					if stamina then drain_stamina(player) end
 					if starve then drain_hunger(player, hunger, name) end
 					if breath then
@@ -181,11 +180,11 @@ minetest.register_globalstep(function(dtime)
 					if particles then create_particles(player, name, pos, ground) end
 				else
 					stop_sprint(player)
-					sprinting = false
+					player:set_attribute("sprinting", "false")
 				end
 			else
 				stop_sprint(player)
-				sprinting = false
+				player:set_attribute("sprinting", "false")
 				if stamina_timer >= replenish then
 					if stamina then replenish_stamina(player) end
 					stamina_timer = 0

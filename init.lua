@@ -1,5 +1,6 @@
 -- Vars
 
+local player
 local speed = tonumber(minetest.settings:get("sprint_speed")) or 1.3
 local jump = tonumber(minetest.settings:get("sprint_jump")) or 1.1
 local key = minetest.settings:get("sprint_key") or "Use"

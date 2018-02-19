@@ -22,13 +22,10 @@ local sprint_timer_step = 0.5
 local sprint_timer = 0
 local stamina_timer = 0
 local breath_timer = 0
-local hudbars = false
-local starve = false
-local monoids = false
 
-if minetest.get_modpath("hudbars") ~= nil then hudbars = true else hudbars = false end
-if minetest.get_modpath("hbhunger") ~= nil then starve = true else starve = false end
-if minetest.get_modpath("player_monoids") ~= nil then monoids = true else monoids = false end
+local hudbars = minetest.get_modpath("hudbars") or false
+local starve = minetest.get_modpath("hbhunger") or false
+local monoids = minetest.get_modpath("player_monoids") or false
 
 -- Functions
 

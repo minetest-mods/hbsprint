@@ -3,20 +3,16 @@
 local speed = tonumber(minetest.settings:get("sprint_speed")) or 1.3
 local jump = tonumber(minetest.settings:get("sprint_jump")) or 1.1
 local key = minetest.settings:get("sprint_key") or "Use"
-local dir = minetest.settings:get_bool("sprint_forward_only")
+local dir = minetest.settings:get_bool("sprint_forward_only") ~= false
 local particles = tonumber(minetest.settings:get("sprint_particles")) or 2
-local stamina = minetest.settings:get_bool("sprint_stamina")
+local stamina = minetest.settings:get_bool("sprint_stamina") ~= false
 local stamina_drain = tonumber(minetest.settings:get("sprint_stamina_drain")) or 2
 local replenish = tonumber(minetest.settings:get("sprint_stamina_replenish")) or 2
-local starve = minetest.settings:get_bool("sprint_starve")
+local starve = minetest.settings:get_bool("sprint_starve") ~= false
 local starve_drain = tonumber(minetest.settings:get("sprint_starve_drain")) or 0.5
-local breath = minetest.settings:get_bool("sprint_breath")
+local breath = minetest.settings:get_bool("sprint_breath") ~= false
 local breath_drain = tonumber(minetest.settings:get("sprint_breath_drain")) or 1
 local autohide = minetest.settings:get_bool("hudbars_autohide_stamina") ~= false
-if dir ~= false then dir = true end
-if stamina ~= false then stamina = true end
-if starve ~= false then starve = true end
-if breath ~= false then breath = true end
 
 local sprint_timer_step = 0.5
 local sprint_timer = 0
@@ -113,20 +109,22 @@ end
 -- Registrations
 
 if minetest.get_modpath("hudbars") ~= nil and stamina then
-  hb.register_hudbar("stamina",
+  hb.register_hudbar(
+    "stamina",
     0xFFFFFF,
     "Stamina",
-    { bar = "sprint_stamina_bar.png", icon = "sprint_stamina_icon.png", bgicon = "sprint_stamina_bgicon.png" },
-    20, 20,
-    false, "%s: %.1f/%.1f")
-  hudbars = true
-  if autohide then
-    hb.hide_hudbar(player, "stamina")
-  end
+    {
+      bar = "sprint_stamina_bar.png",
+      icon = "sprint_stamina_icon.png",
+      bgicon = "sprint_stamina_bgicon.png"
+    },
+    20,
+    20,
+    autohide)
 end
 
 minetest.register_on_joinplayer(function(player)
-  if hudbars and stamina then hb.init_hudbar(player, "stamina") end
+  if hudbars and stamina then hb.init_hudbar(player, "stamina", 20, 20, autohide) end
   player:set_attribute("stamina", 20)
 end)
 

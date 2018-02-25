@@ -175,7 +175,7 @@ minetest.register_globalstep(function(dtime)
         if ground ~= nil then
           walkable = minetest.registered_nodes[ground.name].walkable
         end
-        if player_stamina > 0 and hunger > 9 and walkable then
+        if player_stamina > 0 and hunger > 6 and walkable then
           start_sprint(player)
           player:set_attribute("sprinting", "true")
           if stamina then drain_stamina(player) end

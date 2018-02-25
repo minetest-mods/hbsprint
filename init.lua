@@ -20,8 +20,16 @@ local stamina_timer = 0
 local breath_timer = 0
 
 local hudbars = minetest.get_modpath("hudbars") or false
-local starve = minetest.get_modpath("hbhunger") or false
 local monoids = minetest.get_modpath("player_monoids") or false
+local starve
+if minetest.get_modpath("hbhunger") then
+  starve = "hbhunger"
+elseif minetest.get_modpath("hunger_ng") then
+  starve = "hunger_ng"
+  --starve_drain = starve_drain * -1
+else
+  starve = false
+end
 
 -- Functions
 
@@ -71,8 +79,13 @@ end
 
 local function drain_hunger(player, hunger, name)
   if hunger > 0 then
-    hbhunger.hunger[name] = hunger - starve_drain
-    hbhunger.set_hunger_raw(player)
+    local newhunger = hunger - starve_drain
+    if starve == "hbhunger" then
+      hbhunger.hunger[name] = newhunger
+      hbhunger.set_hunger_raw(player)
+    elseif starve == "hunger_ng" then
+      player:set_attribute("hunger_ng:hunger", newhunger)
+    end
   end
 end
 
@@ -141,7 +154,6 @@ minetest.register_globalstep(function(dtime)
       elseif key == "Use" and not dir then
         key_press = ctrl.aux1
       end
-
       -- if key == "W" and dir then
       --   key_press = ctrl.aux1 and ctrl.up or key_press and ctrl.up
       -- elseif key == "W" then
@@ -155,8 +167,10 @@ minetest.register_globalstep(function(dtime)
         local ground = minetest.get_node_or_nil({x=pos.x, y=pos.y-1, z=pos.z})
         local walkable = false
         local player_stamina = tonumber(player:get_attribute("stamina"))
-        if starve then
+        if starve == "hbhunger" then
           hunger = tonumber(hbhunger.hunger[name])
+        elseif starve == "hunger_ng" then
+          hunger = tonumber(player:get_attribute("hunger_ng:hunger"))
         end
         if ground ~= nil then
           walkable = minetest.registered_nodes[ground.name].walkable

@@ -173,7 +173,10 @@ minetest.register_globalstep(function(dtime)
           hunger = tonumber(player:get_attribute("hunger_ng:hunger"))
         end
         if ground ~= nil then
-          walkable = minetest.registered_nodes[ground.name].walkable
+          local ground_def = minetest.registered_nodes[ground.name]
+          if ground_def then
+            walkable = minetest.registered_nodes[ground.name].walkable
+          end
         end
         if player_stamina > 0 and hunger > 6 and walkable then
           start_sprint(player)

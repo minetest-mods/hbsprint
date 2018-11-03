@@ -1,18 +1,19 @@
 -- Vars
 
-local speed = tonumber(minetest.settings:get("sprint_speed")) or 1.3
-local jump = tonumber(minetest.settings:get("sprint_jump")) or 1.1
-local key = minetest.settings:get("sprint_key") or "Use"
-local dir = minetest.settings:get_bool("sprint_forward_only") ~= false
-local particles = tonumber(minetest.settings:get("sprint_particles")) or 2
-local stamina = minetest.settings:get_bool("sprint_stamina") ~= false
+local speed         = tonumber(minetest.settings:get("sprint_speed")) or 1.3
+local jump          = tonumber(minetest.settings:get("sprint_jump")) or 1.1
+local key           = minetest.settings:get("sprint_key") or "Use"
+local dir           = minetest.settings:get_bool("sprint_forward_only") ~= false
+local particles     = tonumber(minetest.settings:get("sprint_particles")) or 2
+local stamina       = minetest.settings:get_bool("sprint_stamina") ~= false
 local stamina_drain = tonumber(minetest.settings:get("sprint_stamina_drain")) or 2
-local replenish = tonumber(minetest.settings:get("sprint_stamina_replenish")) or 2
-local starve = minetest.settings:get_bool("sprint_starve") ~= false
-local starve_drain = tonumber(minetest.settings:get("sprint_starve_drain")) or 0.5
-local breath = minetest.settings:get_bool("sprint_breath") ~= false
-local breath_drain = tonumber(minetest.settings:get("sprint_breath_drain")) or 1
-local autohide = minetest.settings:get_bool("hudbars_autohide_stamina") ~= false
+local replenish     = tonumber(minetest.settings:get("sprint_stamina_replenish")) or 2
+local starve        = minetest.settings:get_bool("sprint_starve") ~= false
+local starve_drain  = tonumber(minetest.settings:get("sprint_starve_drain")) or 0.5
+local starve_limit  = tonumber(minetest.settings:get("sprint_starve_limit")) or 6
+local breath        = minetest.settings:get_bool("sprint_breath") ~= false
+local breath_drain  = tonumber(minetest.settings:get("sprint_breath_drain")) or 1
+local autohide      = minetest.settings:get_bool("hudbars_autohide_stamina") ~= false
 
 local sprint_timer_step = 0.5
 local sprint_timer = 0
@@ -178,7 +179,7 @@ minetest.register_globalstep(function(dtime)
             walkable = minetest.registered_nodes[ground.name].walkable
           end
         end
-        if player_stamina > 0 and hunger > 6 and walkable then
+        if player_stamina > 0 and hunger > starve_limit and walkable then
           start_sprint(player)
           player:set_attribute("hbsprint:sprinting", "true")
           if stamina then drain_stamina(player) end

@@ -1,18 +1,18 @@
 -- Vars
 
-local speed         = tonumber(minetest.settings:get("sprint_speed")) or 1.3
-local jump          = tonumber(minetest.settings:get("sprint_jump")) or 1.1
-local key           = minetest.settings:get("sprint_key") or "Use"
+local speed         = tonumber(minetest.settings:get ("sprint_speed")) or 1.3
+local jump          = tonumber(minetest.settings:get ("sprint_jump")) or 1.1
+local key           = minetest.settings:get ("sprint_key") or "Use"
 local dir           = minetest.settings:get_bool("sprint_forward_only") ~= false
-local particles     = tonumber(minetest.settings:get("sprint_particles")) or 2
+local particles     = tonumber(minetest.settings:get ("sprint_particles")) or 2
 local stamina       = minetest.settings:get_bool("sprint_stamina") ~= false
-local stamina_drain = tonumber(minetest.settings:get("sprint_stamina_drain")) or 2
-local replenish     = tonumber(minetest.settings:get("sprint_stamina_replenish")) or 2
+local stamina_drain = tonumber(minetest.settings:get ("sprint_stamina_drain")) or 2
+local replenish     = tonumber(minetest.settings:get ("sprint_stamina_replenish")) or 2
 local starve        = minetest.settings:get_bool("sprint_starve") ~= false
-local starve_drain  = tonumber(minetest.settings:get("sprint_starve_drain")) or 0.5
-local starve_limit  = tonumber(minetest.settings:get("sprint_starve_limit")) or 6
+local starve_drain  = tonumber(minetest.settings:get ("sprint_starve_drain")) or 0.5
+local starve_limit  = tonumber(minetest.settings:get ("sprint_starve_limit")) or 6
 local breath        = minetest.settings:get_bool("sprint_breath") ~= false
-local breath_drain  = tonumber(minetest.settings:get("sprint_breath_drain")) or 1
+local breath_drain  = tonumber(minetest.settings:get ("sprint_breath_drain")) or 1
 local autohide      = minetest.settings:get_bool("hudbars_autohide_stamina") ~= false
 
 local sprint_timer_step = 0.5
@@ -31,7 +31,9 @@ elseif minetest.get_modpath("hunger_ng") then
 else
   starve = false
 end
-
+if minetest.settings:get_bool("creative_mode") then
+  starve = false
+end
 -- Functions
 
 local function start_sprint(player)

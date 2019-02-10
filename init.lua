@@ -87,7 +87,7 @@ local function drain_hunger(player, hunger, name)
       hbhunger.hunger[name] = newhunger
       hbhunger.set_hunger_raw(player)
     elseif starve == "hunger_ng" then
-      player:get_meta():set_int("hunger_ng:hunger", newhunger)
+      hunger_ng.alter_hunger(name, - starve_drain, "Sprinting")
     end
   end
 end
@@ -173,7 +173,7 @@ minetest.register_globalstep(function(dtime)
         if starve == "hbhunger" then
           hunger = tonumber(hbhunger.hunger[name])
         elseif starve == "hunger_ng" then
-          hunger = tonumber(player:get_meta():get("hunger_ng:hunger"))
+          hunger = hunger_ng.get_hunger_information(name).hunger.exact
         end
         if ground ~= nil then
           local ground_def = minetest.registered_nodes[ground.name]

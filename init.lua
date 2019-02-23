@@ -20,8 +20,9 @@ local sprint_timer = 0
 local stamina_timer = 0
 local breath_timer = 0
 
-local hudbars = minetest.get_modpath("hudbars") or false
-local monoids = minetest.get_modpath("player_monoids") or false
+local mod_hudbars = minetest.get_modpath("hudbars") or false
+local mod_player_monoids = minetest.get_modpath("player_monoids") or false
+local mod_playerphysics = minetest.get_modpath("playerphysics") or false
 local starve
 if minetest.get_modpath("hbhunger") then
   starve = "hbhunger"
@@ -38,9 +39,12 @@ end
 
 local function start_sprint(player)
   if player:get_meta():get("hbsprint:sprinting") == "false" then
-    if monoids then
+    if mod_player_monoids then
       player_monoids.speed:add_change(player, speed, "hbsprint:speed")
       player_monoids.jump:add_change(player, jump, "hbsprint:jump")
+    elseif mod_playerphysics then
+      playerphysics.add_physics_factor(player, "speed", "hbsprint:speed", speed)
+      playerphysics.add_physics_factor(player, "jump", "hbsprint:jump", jump)
     else
       player:set_physics_override({speed = speed, jump = jump})
     end
@@ -49,9 +53,12 @@ end
 
 local function stop_sprint(player)
   if player:get_meta():get("hbsprint:sprinting") == "true" then
-    if monoids then
+    if mod_player_monoids then
       player_monoids.speed:del_change(player, "hbsprint:speed")
       player_monoids.jump:del_change(player, "hbsprint:jump")
+    elseif mod_playerphysics then
+      playerphysics.remove_physics_factor(player, "speed", "hbsprint:speed")
+      playerphysics.remove_physics_factor(player, "jump", "hbsprint:jump")
     else
       player:set_physics_override({speed = 1, jump = 1})
     end

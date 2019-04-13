@@ -70,7 +70,7 @@ local function drain_stamina(player)
   if player_stamina > 0 then
     player:get_meta():set_float("hbsprint:stamina", player_stamina - stamina_drain)
   end
-  if hudbars then
+  if mod_hudbars then
     if autohide and player_stamina < 20 then hb.unhide_hudbar(player, "stamina") end
     hb.change_hudbar(player, "stamina", player_stamina)
   end
@@ -81,7 +81,7 @@ local function replenish_stamina(player)
   if player_stamina < 20 then
     player:get_meta():set_float("hbsprint:stamina", player_stamina + stamina_drain)
   end
-  if hudbars then
+  if mod_hudbars then
     hb.change_hudbar(player, "stamina", player_stamina)
     if autohide and player_stamina == 20 then hb.hide_hudbar(player, "stamina") end
   end
@@ -131,7 +131,7 @@ end
 
 -- Registrations
 
-if minetest.get_modpath("hudbars") ~= nil and stamina then
+if mod_hudbars and stamina then
   hb.register_hudbar(
     "stamina",
     0xFFFFFF,
@@ -147,7 +147,7 @@ if minetest.get_modpath("hudbars") ~= nil and stamina then
 end
 
 minetest.register_on_joinplayer(function(player)
-  if hudbars and stamina then hb.init_hudbar(player, "stamina", 20, 20, autohide) end
+  if mod_hudbars and stamina then hb.init_hudbar(player, "stamina", 20, 20, autohide) end
   player:get_meta():set_float("hbsprint:stamina", 20)
 end)
 

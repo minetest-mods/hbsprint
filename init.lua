@@ -2,7 +2,6 @@
 
 local speed         = tonumber(minetest.settings:get ("sprint_speed")) or 1.3
 local jump          = tonumber(minetest.settings:get ("sprint_jump")) or 1.1
-local key           = minetest.settings:get ("sprint_key") or "Use"
 local dir           = minetest.settings:get_bool("sprint_forward_only") ~= false
 local particles     = tonumber(minetest.settings:get ("sprint_particles")) or 2
 local stamina       = minetest.settings:get_bool("sprint_stamina") ~= false
@@ -26,7 +25,6 @@ if minetest.get_modpath("hbhunger") then
   starve = "hbhunger"
 elseif minetest.get_modpath("hunger_ng") then
   starve = "hunger_ng"
-  --starve_drain = starve_drain * -1
 else
   starve = false
 end
@@ -157,16 +155,11 @@ minetest.register_globalstep(function(dtime)
       local key_press = false
       player:get_meta():set_float("hbsprint_stamina_timer", player:get_meta():get_float("hbsprint_stamina_timer") + sprint_timer)
       player:get_meta():set_float("hbsprint_breath_timer", player:get_meta():get_float("hbsprint_breath_timer") + sprint_timer)
-      if key == "Use" and dir then
+      if dir then
         key_press = ctrl.aux1 and ctrl.up and not ctrl.left and not ctrl.right
-      elseif key == "Use" and not dir then
+      else
         key_press = ctrl.aux1
       end
-      -- if key == "W" and dir then
-      --   key_press = ctrl.aux1 and ctrl.up or key_press and ctrl.up
-      -- elseif key == "W" then
-      --   key_press = ctrl.aux1 or key_press and key_tap
-      -- end
 
       if key_press then
         local name = player:get_player_name()

@@ -20,6 +20,9 @@ local autohide      = minetest.is_yes(setting_get("hudbards_autohide_stamina", "
 
 local sprint_timer_step = 0.5
 local sprint_timer = 0
+local sprinting = {}
+local stamina_timer = {}
+local breath_timer = {}
 
 local mod_hudbars = minetest.get_modpath("hudbars") ~= nil
 local mod_player_monoids = minetest.get_modpath("player_monoids") ~= nil
@@ -40,7 +43,7 @@ end
 -- Functions
 
 local function start_sprint(player)
-  if player:get_meta():get("hbsprint:sprinting") == "false" then
+  if not sprinting[player:get_player_name()] then
     if mod_player_monoids then
       player_monoids.speed:add_change(player, speed, "hbsprint:speed")
       player_monoids.jump:add_change(player, jump, "hbsprint:jump")
@@ -54,7 +57,7 @@ local function start_sprint(player)
 end
 
 local function stop_sprint(player)
-  if player:get_meta():get("hbsprint:sprinting") == "true" then
+  if sprinting[player:get_player_name()] then
     if mod_player_monoids then
       player_monoids.speed:del_change(player, "hbsprint:speed")
       player_monoids.jump:del_change(player, "hbsprint:jump")
@@ -159,8 +162,8 @@ minetest.register_globalstep(function(dtime)
     for _,player in ipairs(minetest.get_connected_players()) do
       local ctrl = player:get_player_control()
       local key_press = false
-      player:get_meta():set_float("hbsprint_stamina_timer", player:get_meta():get_float("hbsprint_stamina_timer") + sprint_timer)
-      player:get_meta():set_float("hbsprint_breath_timer", player:get_meta():get_float("hbsprint_breath_timer") + sprint_timer)
+      stamina_timer[player:get_player_name()] = (stamina_timer[player:get_player_name()] or 0) + sprint_timer
+      breath_timer[player:get_player_name()] = (breath_timer[player:get_player_name()] or 0) + sprint_timer
       if dir then
         key_press = ctrl.aux1 and ctrl.up and not ctrl.left and not ctrl.right
       else
@@ -187,26 +190,26 @@ minetest.register_globalstep(function(dtime)
         end
         if player_stamina > 0 and hunger > starve_limit and walkable then
           start_sprint(player)
-          player:get_meta():set_string("hbsprint:sprinting", "true")
+          sprinting[name] = true
           if stamina then drain_stamina(player) end
           if starve then drain_hunger(player, hunger, name) end
           if breath then
-            if player:get_meta():get_float("hbsprint_breath_timer") >= 2 then
+            if breath_timer[name] >= 2 then
               drain_breath(player)
-              player:get_meta():set_float("hbsprint_breath_timer", 0)
+              breath_timer[name] = 0
             end
           end
           if particles then create_particles(player, name, pos, ground) end
         else
           stop_sprint(player)
-          player:get_meta():set_string("hbsprint:sprinting", "false")
+          sprinting[name] = false
         end
       else
         stop_sprint(player)
-        player:get_meta():set_string("hbsprint:sprinting", "false")
-        if player:get_meta():get_float("hbsprint_stamina_timer") >= replenish then
+        sprinting[player:get_player_name()] = false
+        if stamina_timer[player:get_player_name()] >= replenish then
           if stamina then replenish_stamina(player) end
-          player:get_meta():set_float("hbsprint_stamina_timer", 0)
+          stamina_timer[player:get_player_name()] = 0
         end
       end
     end

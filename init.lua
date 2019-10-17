@@ -40,6 +40,7 @@ end
 if minetest.settings:get_bool("creative_mode") then
   starve = false
 end
+
 -- Functions
 
 local function start_sprint(player)
@@ -110,22 +111,28 @@ end
 
 local function drain_breath(player)
   local player_breath = player:get_breath()
-  if player_breath < 11 then
+  if player_breath < player:get_properties().breath_max then
     player_breath = math.max(0, player_breath - breath_drain)
     player:set_breath(player_breath)
   end
 end
 
-local function create_particles(player, name, pos, ground)
-  if not ground or ground.name == "air" or ground.name == "ignore" then
-    return
-  end
+local function is_walkable(ground)
+  local ground_def = minetest.registered_nodes[ground.name]
+  return ground_def and (ground_def.walkable and ground_def.liquidtype == "none")
+end
+
+local function create_particles(player, name, ground)
   local def = minetest.registered_nodes[ground.name]
   local tile = def.tiles[1] or def.inventory_image
-  if type(tile) ~= "string" then
+  if type(tile) == "table" then
+    tile = tile.name
+  end
+  if not tile then
     return
   end
 
+  local pos = player:get_pos()
   local rand = function() return math.random(-1,1) * math.random() / 2 end
   for i = 1, particles do
     minetest.add_particle({
@@ -169,6 +176,10 @@ end)
 local function sprint_step(player, dtime)
   local name = player:get_player_name()
 
+  if minetest.get_player_privs(name).fast then
+    return
+  end
+
   if stamina then
     stamina_timer[name] = (stamina_timer[name] or 0) + dtime
   end
@@ -193,12 +204,17 @@ local function sprint_step(player, dtime)
     return
   end
 
-  local pos = player:get_pos()
-  local ground = minetest.get_node_or_nil({x=pos.x, y=pos.y-1, z=pos.z})
-  local walkable = false
-  if ground ~= nil then
-    local ground_def = minetest.registered_nodes[ground.name]
-    walkable = ground_def and (ground_def.walkable or ground_def.liquidtype ~= "none")
+  local ground_pos = player:get_pos()
+  ground_pos.y = math.floor(ground_pos.y)
+  -- check if player is reasonably near a walkable node
+  local ground
+  for _, y_off in ipairs({0, -1, -2}) do
+    local testpos = vector.add(ground_pos, {x=0, y=y_off, z=0})
+    local testnode = minetest.get_node_or_nil(testpos)
+    if testnode ~= nil and is_walkable(testnode) then
+      ground = testnode
+      break
+    end
   end
 
   local player_stamina = 1
@@ -212,7 +228,7 @@ local function sprint_step(player, dtime)
     hunger = hunger_ng.get_hunger_information(name).hunger.exact
   end
 
-  if player_stamina > 0 and hunger > starve_limit and walkable then
+  if player_stamina > 0 and hunger > starve_limit and ground then
     start_sprint(player)
     if stamina then drain_stamina(player) end
     if starve then drain_hunger(player, name) end
@@ -221,7 +237,7 @@ local function sprint_step(player, dtime)
       breath_timer[name] = 0
     end
     if particles then
-      create_particles(player, name, pos, ground)
+      create_particles(player, name, ground)
     end
   else
     stop_sprint(player)

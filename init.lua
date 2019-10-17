@@ -1,32 +1,38 @@
 -- Vars
 
-local speed         = tonumber(minetest.settings:get ("sprint_speed")) or 1.3
-local jump          = tonumber(minetest.settings:get ("sprint_jump")) or 1.1
-local dir           = minetest.settings:get_bool("sprint_forward_only") ~= false
-local particles     = tonumber(minetest.settings:get ("sprint_particles")) or 2
-local stamina       = minetest.settings:get_bool("sprint_stamina") ~= false
-local stamina_drain = tonumber(minetest.settings:get ("sprint_stamina_drain")) or 2
-local replenish     = tonumber(minetest.settings:get ("sprint_stamina_replenish")) or 2
-local starve        = minetest.settings:get_bool("sprint_starve") ~= false
-local starve_drain  = tonumber(minetest.settings:get ("sprint_starve_drain")) or 0.5
-local starve_limit  = tonumber(minetest.settings:get ("sprint_starve_limit")) or 6
-local breath        = minetest.settings:get_bool("sprint_breath") ~= false
-local breath_drain  = tonumber(minetest.settings:get ("sprint_breath_drain")) or 1
-local autohide      = minetest.settings:get_bool("hudbars_autohide_stamina") ~= false
+local function setting_get(name, default)
+	return minetest.settings:get(name) or default
+end
+
+local speed         = tonumber(setting_get("sprint_speed", "1.3"))
+local jump          = tonumber(setting_get("sprint_jump", "1.1"))
+local dir           = minetest.is_yes(setting_get("sprint_forward_only", "false"))
+local particles     = tonumber(setting_get("sprint_particles", "2"))
+local stamina       = minetest.is_yes(setting_get("sprint_stamina", "true"))
+local stamina_drain = tonumber(setting_get("sprint_stamina_drain", "2"))
+local replenish     = tonumber(setting_get("sprint_stamina_replenish", "2"))
+local starve        = minetest.is_yes(setting_get("sprint_starve", "true"))
+local starve_drain  = tonumber(setting_get("sprint_starve_drain", "0.5"))
+local starve_limit  = tonumber(setting_get("sprint_starve_limit", "6"))
+local breath        = minetest.is_yes(setting_get("sprint_breath", "true"))
+local breath_drain  = tonumber(setting_get("sprint_breath_drain", "1"))
+local autohide      = minetest.is_yes(setting_get("hudbards_autohide_stamina", "false"))
 
 local sprint_timer_step = 0.5
 local sprint_timer = 0
 
-local mod_hudbars = minetest.get_modpath("hudbars") or false
-local mod_player_monoids = minetest.get_modpath("player_monoids") or false
-local mod_playerphysics = minetest.get_modpath("playerphysics") or false
-local starve
-if minetest.get_modpath("hbhunger") then
-  starve = "hbhunger"
-elseif minetest.get_modpath("hunger_ng") then
-  starve = "hunger_ng"
-else
-  starve = false
+local mod_hudbars = minetest.get_modpath("hudbars") ~= nil
+local mod_player_monoids = minetest.get_modpath("player_monoids") ~= nil
+local mod_playerphysics = minetest.get_modpath("playerphysics") ~= nil
+
+if starve then
+  if minetest.get_modpath("hbhunger") then
+    starve = "hbhunger"
+  elseif minetest.get_modpath("hunger_ng") then
+    starve = "hunger_ng"
+  else
+    starve = false
+  end
 end
 if minetest.settings:get_bool("creative_mode") then
   starve = false

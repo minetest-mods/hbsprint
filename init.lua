@@ -16,7 +16,7 @@ local starve_drain  = tonumber(setting_get("sprint_starve_drain", "0.5"))
 local starve_limit  = tonumber(setting_get("sprint_starve_limit", "6"))
 local breath        = minetest.is_yes(setting_get("sprint_breath", "true"))
 local breath_drain  = tonumber(setting_get("sprint_breath_drain", "1"))
-local autohide      = minetest.is_yes(setting_get("hudbards_autohide_stamina", "false"))
+local autohide      = minetest.is_yes(setting_get("hudbars_autohide_stamina", "true"))
 
 local sprint_timer_step = 0.5
 local sprint_timer = 0

@@ -11,6 +11,7 @@ local particles     = tonumber(setting_get("sprint_particles", "2"))
 local stamina       = minetest.is_yes(setting_get("sprint_stamina", "true"))
 local stamina_drain = tonumber(setting_get("sprint_stamina_drain", "2"))
 local stamina_heal  = tonumber(setting_get("sprint_stamina_heal", "2"))
+local standing      = tonumber(setting_get("sprint_stamina_standing", "2.5"))
 local replenish     = tonumber(setting_get("sprint_stamina_replenish", "2"))
 local starve        = minetest.is_yes(setting_get("sprint_starve", "true"))
 local starve_drain  = tonumber(setting_get("sprint_starve_drain", "0.5"))
@@ -92,7 +93,11 @@ local function replenish_stamina(player)
   local player_stamina = player:get_meta():get_float("hbsprint:stamina")
   local ctrl = player:get_player_control()
   if player_stamina < 20 and not ctrl.jump then
-    player_stamina = math.min(20, player_stamina + stamina_heal)
+    if not ctrl.right and not ctrl.left and not ctrl.down and not ctrl.up and not ctrl.LMB and not ctrl.RMB then
+      player_stamina = math.min(20, player_stamina + standing)
+    else
+      player_stamina = math.min(20, player_stamina + stamina_heal)
+    end
     player:get_meta():set_float("hbsprint:stamina", player_stamina)
   end
   if mod_hudbars then

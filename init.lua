@@ -90,7 +90,8 @@ end
 
 local function replenish_stamina(player)
   local player_stamina = player:get_meta():get_float("hbsprint:stamina")
-  if player_stamina < 20 then
+  local ctrl = player:get_player_control()
+  if player_stamina < 20 and not ctrl.jump then
     player_stamina = math.min(20, player_stamina + stamina_heal)
     player:get_meta():set_float("hbsprint:stamina", player_stamina)
   end

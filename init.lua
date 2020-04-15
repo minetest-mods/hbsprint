@@ -199,7 +199,7 @@ local function sprint_step(player, dtime)
   if dir then
     key_press = ctrl.aux1 and ctrl.up and not ctrl.left and not ctrl.right
   else
-    key_press = ctrl.aux1
+    key_press = ctrl.aux1 and (ctrl.up or ctrl.left or ctrl.right or crtl.down)
   end
 
   if not key_press then

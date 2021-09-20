@@ -45,6 +45,8 @@ end
 
 -- Functions
 
+local _previous_physics = {}
+
 local function start_sprint(player)
   local name = player:get_player_name()
   if not sprinting[name] then
@@ -55,6 +57,7 @@ local function start_sprint(player)
       playerphysics.add_physics_factor(player, "speed", "hbsprint:speed", speed)
       playerphysics.add_physics_factor(player, "jump", "hbsprint:jump", jump)
     else
+      _previous_physics[name] = player:get_physics_override()
       player:set_physics_override({speed = speed, jump = jump})
     end
     sprinting[name] = true
@@ -71,7 +74,8 @@ local function stop_sprint(player)
       playerphysics.remove_physics_factor(player, "speed", "hbsprint:speed")
       playerphysics.remove_physics_factor(player, "jump", "hbsprint:jump")
     else
-      player:set_physics_override({speed = 1, jump = 1})
+      local restore = _previous_physics[name] or {}
+      player:set_physics_override(restore)
     end
     sprinting[name] = false
   end
@@ -259,3 +263,4 @@ minetest.register_globalstep(function(dtime)
     sprint_timer = 0
   end
 end)
+
